@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSYCH-TEST KHKT v0.4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .active-tab { background-color: #4f46e5 !important; color: white !important; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans flex flex-col justify-between">
+
+    <!-- HEADER & NAVBAR -->
+    <header class="bg-slate-800/80 backdrop-blur border-b border-slate-700 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 p-2.5 rounded-xl text-white">
+                    <i class="fa-solid fa-brain text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-none">PSYCH-TEST KHKT v0.4</h1>
+                    <p class="text-xs text-slate-400 mt-1">Nghiên cứu ảnh hưởng của tần số âm thanh đến nhận thức</p>
+                </div>
+            </div>
+            
+            <nav class="flex items-center space-x-2 text-sm">
+                <button onclick="switchTab('test')" id="btn-tab-test" class="tab-btn active-tab px-4 py-2 rounded-lg font-medium transition flex items-center gap-2">
+                    <i class="fa-solid fa-play"></i> Bài Test
+                </button>
+                <button onclick="switchTab('guide')" id="btn-tab-guide" class="tab-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg font-medium transition flex items-center gap-2">
+                    <i class="fa-solid fa-circle-question"></i> Hướng Dẫn
+                </button>
+
+                <button onclick="switchTab('project')" id="btn-tab-project" class="tab-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg font-medium transition flex items-center gap-2">
+                    <i class="fa-solid fa-file-lines"></i> Đề tài KHKT
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-4xl mx-auto w-full px-4 py-8 flex-grow">
+
+        <!-- TAB 1: BÀI TEST -->
+        <section id="tab-test" class="space-y-6">
+            <div class="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-6 backdrop-blur">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl">
+                        <i class="fa-solid fa-flask text-2xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold mb-1">Khảo sát & Kiểm tra Thực nghiệm</h2>
+                        <p class="text-sm text-slate-400">Bài thử nghiệm đo thời gian phản ứng thị giác (CPT) kết hợp đánh giá tâm lý trước/sau thử nghiệm. Bạn sẽ lần lượt trải qua <strong>4 dải tần số âm thanh ngẫu nhiên</strong>. Vui lòng đeo tai nghe và giữ tập trung cao độ.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORM CẤU HÌNH & PHIẾU KHẢO SÁT BAN ĐẦU -->
+            <div id="setup-panel" class="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-6">
+                <h3 class="text-md font-semibold text-slate-300 flex items-center gap-2 border-b border-slate-700 pb-3">
+                    <i class="fa-solid fa-sliders text-indigo-400"></i> THÔNG TIN BẮT ĐẦU & PHIẾU TỰ ĐÁNH GIÁ (PRE-TEST)
+                </h3>
+
+                <!-- THÔNG TIN NGƯỜI THAM GIA & CẤU HÌNH -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-slate-300">Họ và tên <span class="text-rose-500">*</span></label>
+                        <input type="text" id="student-name" placeholder="VD: Nguyễn Văn A" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-4 focus:outline-none focus:border-indigo-500 text-slate-100 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-slate-300">Trường <span class="text-rose-500">*</span></label>
+                        <input type="text" id="school-name" placeholder="VD: THPT ..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-4 focus:outline-none focus:border-indigo-500 text-slate-100 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-slate-300">Lớp <span class="text-rose-500">*</span></label>
+                        <input type="text" id="class-name" placeholder="VD: 11 Pháp 1" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-4 focus:outline-none focus:border-indigo-500 text-slate-100 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-slate-300">Số lượt thử / Tần số</label>
+                        <select id="trial-count" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-4 focus:outline-none focus:border-indigo-500 text-slate-100 text-sm">
+                            <option value="10">10 Lượt (Chuẩn)</option>
+                            <option value="15">15 Lượt (Chính xác cao)</option>
+                            <option value="5">5 Lượt (Thử nhanh)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-slate-300">Âm lượng (Volume)</label>
+                        <div class="flex items-center gap-3 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2">
+                            <input type="range" id="volume-range" min="5" max="100" value="30" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500" oninput="document.getElementById('vol-val').innerText = this.value + '%'">
+                            <span id="vol-val" class="text-xs font-bold text-slate-300 w-10 text-right">30%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PHIẾU TỰ ĐÁNH GIÁ TRƯỚC THỬ NGHIỆM -->
+                <div class="bg-slate-900/60 border border-slate-700/80 rounded-xl p-4 space-y-4">
+                    <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-question"></i> Khảo sát trạng thái hiện tại của bạn
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Mức độ MỆT MỎI hiện tại (1: Rất tỉnh táo &rarr; 5: Rất mệt mỏi):</label>
+                            <select id="pre-fatigue" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs">
+                                <option value="1">1 - Cực kỳ tỉnh táo, tràn đầy năng lượng</option>
+                                <option value="2">2 - Bình thường, hơi tỉnh táo</option>
+                                <option value="3" selected>3 - Bình thường</option>
+                                <option value="4">4 - Hơi mệt mỏi, oải</option>
+                                <option value="5">5 - Rất mệt mỏi, buồn ngủ</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Mức độ CĂNG THẲNG / STRESS (1: Cực kỳ thư giãn &rarr; 5: Rất căng thẳng):</label>
+                            <select id="pre-stress" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs">
+                                <option value="1">1 - Thoải mái, không căng thẳng</option>
+                                <option value="2">2 - Hơi thoải mái</option>
+                                <option value="3" selected>3 - Bình thường</option>
+                                <option value="4">4 - Hơi áp lực / căng thẳng</option>
+                                <option value="5">5 - Cực kỳ căng thẳng / lo âu</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KHUNG ĐIỀU KHOẢN & CAM KẾT PARTICIPANT CONSENT -->
+                <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 12px; margin-bottom: 12px; max-height: 120px; overflow-y: auto; font-size: 0.85rem; color: #cbd5e1;">
+                  <h4 style="color: #60a5fa; margin-bottom: 6px; font-size: 0.9rem;">ĐIỀU KHOẢN & CAM KẾT THAM GIA THỬ NGHIỆM:</h4>
+                  <p>1. <b>Tính Tự Nguyện:</b> Bằng việc tham gia, bạn xác nhận tự nguyện đóng góp dữ liệu cho đề tài nghiên cứu KHKT.</p>
+                  <p>2. <b>Bảo Mật Dữ Liệu:</b> Thông tin người tham gia được sử dụng để phục vụ việc tổng hợp kết quả của bài thử nghiệm. Dữ liệu chỉ phục vụ mục đích phân tích thống kê khoa học.</p>
+                  <p>3. <b>An Toàn Âm Thanh:</b> Âm thanh thử nghiệm được giới hạn ở mức âm lượng an toàn. Bạn có thể dừng bài thử nghiệm bất kỳ lúc nào nếu cảm thấy khó chịu.</p>
+                </div>
+                
+                <label class="flex items-center gap-3 text-sm text-slate-300 cursor-pointer">
+                    <input type="checkbox" id="consent-check" class="w-4 h-4 accent-indigo-500">
+                    <span>Tôi đã đọc và đồng ý tham gia thử nghiệm.</span>
+                </label>
+
+                <button onclick="startFullTestSession()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-xl transition">
+                    BẮT ĐẦU THỬ NGHIỆM
+                </button>
+            </div>
+
+            <!-- KHU VỰC THỰC NGHIỆM (CPT TEST) -->
+            <div id="test-area" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-8 text-center space-y-6">
+                <div class="flex justify-between items-center text-sm text-slate-400 border-b border-slate-700 pb-4">
+                    <span>Vòng: <strong id="current-block" class="text-indigo-400">1 / 4</strong></span>
+                    <span>Lượt: <strong id="current-trial" class="text-white">0</strong> / <span id="total-trials">10</span></span>
+                    <span>Tần số hiện tại: <strong id="active-cond-name" class="text-amber-400">---</strong></span>
+                </div>
+
+                <div id="stimulus-box" class="h-64 bg-slate-900 border-2 border-dashed border-slate-700 rounded-2xl flex items-center justify-center relative overflow-hidden transition-all duration-100">
+                    <p id="stimulus-text" class="text-slate-500 text-sm">Chuẩn bị...</p>
+                    <div id="target-circle" class="hidden w-28 h-28 bg-emerald-500 rounded-full shadow-[0_0_35px_rgba(16,185,129,0.6)] animate-pulse"></div>
+                </div>
+
+                <button id="btn-react" onclick="handleReaction()" class="w-full py-6 bg-slate-700 hover:bg-slate-600 text-white font-bold text-xl rounded-xl transition active:scale-98">
+                    PHẢN ỨNG (SPACEBAR)
+                </button>
+            </div>
+
+            <!-- MÀN HÌNH NGHỈ GIỮA CÁC VÒNG -->
+            <div id="break-panel" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-8 text-center space-y-6">
+                <div class="w-16 h-16 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center mx-auto text-2xl">
+                    <i class="fa-solid fa-mug-hot"></i>
+                </div>
+                <h3 class="text-2xl font-bold">Nghỉ Giải Lao 10 Giây</h3>
+                <p class="text-sm text-slate-400">Bạn đã hoàn thành Vòng <span id="completed-block-num">1</span>/4. Hãy thả lỏng mắt và chuẩn bị cho dải tần số tiếp theo.</p>
+                <button onclick="startNextBlock()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-8 py-3 rounded-xl transition">
+                    Sẵn Sàng Sang Vòng Tiếp Theo
+                </button>
+            </div>
+
+            <!-- PHIẾU ĐÁNH GIÁ SAU THỰC NGHIỆM (POST-TEST EVALUATION) -->
+            <div id="post-survey-panel" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-6">
+                <div class="text-center space-y-2 border-b border-slate-700 pb-4">
+                    <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-xl">
+                        <i class="fa-solid fa-square-poll-vertical"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Phiếu Đánh Giá Sau Thử Nghiệm</h3>
+                    <p class="text-xs text-slate-400">Vui lòng hoàn thành 2 câu hỏi cảm nhận nhanh dưới đây để lưu kết quả vào hệ thống.</p>
+                </div>
+
+                <div class="space-y-4 text-sm">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">1. Mức độ GÂY CHÓI TAI / KHÓ CHỊU của các dải âm thanh vừa nghe:</label>
+                        <select id="post-annoyance" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 text-xs">
+                            <option value="1">1 - Hoàn toàn êm dịu / Không gây khó chịu</option>
+                            <option value="2">2 - Hơi nghe thấy tiếng ồn nhưng bình thường</option>
+                            <option value="3" selected>3 - Bình thường</option>
+                            <option value="4">4 - Khá chói tai / Cảm thấy hơi phiền</option>
+                            <option value="5">5 - Rất chói tai / Cực kỳ khó chịu</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">2. Tự đánh giá KHẢ NĂNG TẬP TRUNG của bản thân trong suốt bài test vừa qua:</label>
+                        <select id="post-focus" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 text-xs">
+                            <option value="5">5 - Cực kỳ tập trung, không phân tâm chút nào</option>
+                            <option value="4">4 - Khá tập trung</option>
+                            <option value="3" selected>3 - Mức độ tập trung trung bình</option>
+                            <option value="2">2 - Hay bị mất tập trung / Xao nhãng</option>
+                            <option value="1">1 - Cực kỳ mất tập trung / Rất mệt mỏi</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="submitFinalSessionData()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-check"></i> HOÀN TẤT & XEM KẾT QUẢ
+                </button>
+            </div>
+
+            <!-- KẾT QUẢ CÁ NHÂN TỔNG HỢP -->
+            <div id="result-panel" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-6">
+                <div class="text-center space-y-2">
+                    <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-2xl">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold">Hoàn Thành Bài Thử Nghiệm!</h3>
+                    <p class="text-sm text-slate-400">Dưới đây là kết quả của bạn. Bạn có thể tải kết quả về dưới dạng hình ảnh.</p>
+                </div>
+
+                <div id="summary-cards" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <button onclick="downloadResultImage()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-download"></i> TẢI KẾT QUẢ VỀ
+                    </button>
+                    <button onclick="resetTest()" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 rounded-xl transition">
+                        Thực Hiện Cho Học Sinh Khác
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: HƯỚNG DẪN -->
+        <section id="tab-guide" class="hidden space-y-6">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-4">
+                <h3 class="text-xl font-bold text-indigo-400 border-b border-slate-700 pb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-book-open"></i> Hướng Dẫn Dành Cho Học Sinh
+                </h3>
+                <ol class="list-decimal list-inside space-y-3 text-slate-300 text-sm leading-relaxed">
+                    <li><strong class="text-white">Chuẩn bị:</strong> Đeo tai nghe, nhập Họ và tên, Trường và Lớp và hoàn thành 2 câu tự đánh giá mức độ mệt mỏi/căng thẳng ban đầu.</li>
+                    <li><strong class="text-white">Thực nghiệm 4 Vòng:</strong> Bạn sẽ đi qua 4 dải tần âm thanh ngẫu nhiên. Bấm phím <kbd class="px-2 py-0.5 bg-slate-700 border border-slate-600 rounded text-amber-300">Spacebar</kbd> ngay khi thấy VÒNG TRÒN XANH LÁ xuất hiện.</li>
+                    <li><strong class="text-white">Hoàn tất:</strong> Sau khi hết 4 vòng, hãy điền Phiếu đánh giá sau thử nghiệm để kết thúc.</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- TAB 3: THÔNG TIN ĐỀ TÀI -->
+        <section id="tab-project" class="hidden">
+            <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 24px; max-width: 800px; margin: 0 auto; color: #e2e8f0;">
+                <h2 style="color: #818cf8; font-size: 1.4rem; margin-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 8px;">
+                  🎓 Đề Tài Nghiên Cứu Khoa Học Kỹ Thuật
+                </h2>
+                
+                <div style="margin-bottom: 16px;">
+                  <p style="margin-bottom: 6px;"><strong style="color: #93c5fd;">Tên đề tài:</strong> Nghiên cứu ảnh hưởng của các dải tần số âm thanh đến thời gian phản ứng và khả năng duy trì sự tập trung của học sinh THPT.</p>
+                  <p style="margin-bottom: 6px;"><strong style="color: #93c5fd;">Học sinh thực hiện:</strong> Bùi Lê Quang Minh & Bùi Vũ Khánh Thư</p>
+                </div>
+
+                <div style="background: rgba(15, 23, 42, 0.5); padding: 14px; border-radius: 8px; font-size: 0.9rem; line-height: 1.6; color: #cbd5e1;">
+                  <h3 style="color: #f3f4f6; font-size: 1rem; margin-bottom: 8px;">📌 Mô tả tổng quan & Mục tiêu nghiên cứu:</h3>
+                  <p style="margin-bottom: 8px;">Môi trường âm thanh đóng vai trò quan trọng trong hiệu suất học tập và khả năng ghi nhớ. Thử nghiệm này được thiết kế dựa trên phương pháp <b>Continuous Performance Test (CPT)</b> nhằm đo lường chính xác biến đổi thời gian phản ứng (Reaction Time) và độ chính xác của thị giác khi chịu tác động từ các dải tần âm thanh khác nhau.</p>
+                  
+                  <h3 style="color: #f3f4f6; font-size: 1rem; margin-bottom: 8px; margin-top: 12px;">🧪 Quy trình thử nghiệm:</h3>
+                  <ul style="padding-left: 20px; margin-bottom: 0;">
+                    <li><b>Bước 1:</b> Khảo sát tự đánh giá trạng thái tâm lý ban đầu (Mệt mỏi, Stress).</li>
+                    <li><b>Bước 2:</b> Thực hiện 4 vòng đo thời gian phản ứng tương ứng với các tần số âm thanh ngẫu nhiên.</li>
+                    <li><b>Bước 3:</b> Đánh giá cảm nhận chủ quan về âm thanh và độ tập trung sau khi hoàn thành.</li>
+                  </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-4 text-center text-xs text-slate-500">
+        © 2026 Đề tài Nghiên cứu Khoa học Kỹ thuật Học sinh THPT - Bùi Lê Quang Minh & Bùi Vũ Khánh Thư
+    </footer>
+
+    <!-- LOGIC JAVASCRIPT -->
+    <script>
+        let audioCtx = null;
+        let currentOsc = null;
+        let currentGain = null;
+
+        const AUDIO_CONDITIONS = [
+            { id: 'control', name: 'Đối chứng (0 Hz)', freq: 0 },
+            { id: 'low', name: 'Tần số Thấp (250 Hz)', freq: 250 },
+            { id: 'mid', name: 'Tần số Trung (1,000 Hz)', freq: 1000 },
+            { id: 'high', name: 'Tần số Cao (4,000 Hz)', freq: 4000 }
+        ];
+
+        let sessionConfig = { 
+            studentName: '', 
+            schoolName: '', 
+            className: '', 
+            maxTrialsPerBlock: 10, 
+            volume: 0.3, 
+            randomizedConditions: [],
+            preFatigue: 3,
+            preStress: 3
+        };
+
+        let sessionState = { 
+            currentBlockIndex: 0, 
+            activeTrial: 0, 
+            reactionTimes: [], 
+            earlyErrors: 0, 
+            startTime: 0, 
+            waitingForStimulus: false, 
+            timeoutId: null, 
+            currentSessionResults: [] 
+        };
+
+
+
+        function switchTab(tabName) {
+            ['test', 'guide', 'project'].forEach(t => {
+                const tabEl = document.getElementById(`tab-${t}`);
+                const btnEl = document.getElementById(`btn-tab-${t}`);
+                if (tabEl) tabEl.classList.add('hidden');
+                if (btnEl) {
+                    btnEl.classList.remove('active-tab');
+                    btnEl.classList.add('bg-slate-800', 'text-slate-300');
+                }
+            });
+            
+            const activeTab = document.getElementById(`tab-${tabName}`);
+            const activeBtn = document.getElementById(`btn-tab-${tabName}`);
+            if (activeTab) activeTab.classList.remove('hidden');
+            if (activeBtn) {
+                activeBtn.classList.add('active-tab');
+                activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+            }
+            
+        }
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playTone(freq, vol) {
+            initAudio();
+            stopTone();
+            if (freq === 0) return;
+            
+            currentOsc = audioCtx.createOscillator();
+            currentGain = audioCtx.createGain();
+            currentOsc.type = 'sine';
+            currentOsc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            currentGain.gain.setValueAtTime(vol, audioCtx.currentTime);
+            
+            currentOsc.connect(currentGain);
+            currentGain.connect(audioCtx.destination);
+            currentOsc.start();
+        }
+
+        function stopTone() {
+            if (currentOsc) {
+                try {
+                    currentOsc.stop();
+                    currentOsc.disconnect();
+                } catch(e) {}
+                currentOsc = null;
+            }
+        }
+
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startFullTestSession() {
+            const studentName = document.getElementById('student-name').value.trim();
+            const schoolName = document.getElementById('school-name').value.trim();
+            const className = document.getElementById('class-name').value.trim();
+            if (!studentName || !schoolName || !className) {
+                alert('Vui lòng nhập đầy đủ Họ và tên, Trường và Lớp trước khi bắt đầu!');
+                return;
+            }
+
+            const consent = document.getElementById('consent-check').checked;
+            if(!consent) {
+                alert('Vui lòng tích chọn đồng ý với Điều khoản tự nguyện & Bảo mật dữ liệu!');
+                return;
+            }
+
+            initAudio(); // Khởi tạo âm thanh từ tương tác người dùng
+
+            sessionConfig.studentName = studentName;
+            sessionConfig.schoolName = schoolName;
+            sessionConfig.className = className;
+            sessionConfig.maxTrialsPerBlock = parseInt(document.getElementById('trial-count').value);
+            sessionConfig.volume = parseFloat(document.getElementById('volume-range').value) / 100;
+            sessionConfig.preFatigue = document.getElementById('pre-fatigue').value;
+            sessionConfig.preStress = document.getElementById('pre-stress').value;
+            sessionConfig.randomizedConditions = shuffleArray(AUDIO_CONDITIONS);
+
+            sessionState.currentBlockIndex = 0;
+            sessionState.currentSessionResults = [];
+
+            document.getElementById('setup-panel').classList.add('hidden');
+            startBlock();
+        }
+
+        function startBlock() {
+            const currentCond = sessionConfig.randomizedConditions[sessionState.currentBlockIndex];
+            
+            document.getElementById('test-area').classList.remove('hidden');
+            document.getElementById('break-panel').classList.add('hidden');
+
+            document.getElementById('current-block').innerText = `${sessionState.currentBlockIndex + 1} / 4`;
+            document.getElementById('total-trials').innerText = sessionConfig.maxTrialsPerBlock;
+            document.getElementById('active-cond-name').innerText = currentCond.name;
+
+            if(currentCond.freq > 0) {
+                playTone(currentCond.freq, sessionConfig.volume);
+            } else {
+                stopTone();
+            }
+
+            sessionState.activeTrial = 0;
+            sessionState.reactionTimes = [];
+            sessionState.earlyErrors = 0;
+
+            nextTrial();
+        }
+
+        function nextTrial() {
+            if (sessionState.activeTrial >= sessionConfig.maxTrialsPerBlock) {
+                finishBlock();
+                return;
+            }
+
+            sessionState.activeTrial++;
+            document.getElementById('current-trial').innerText = sessionState.activeTrial;
+            
+            const box = document.getElementById('stimulus-box');
+            const circle = document.getElementById('target-circle');
+            const text = document.getElementById('stimulus-text');
+
+            circle.classList.add('hidden');
+            text.classList.remove('hidden');
+            text.innerText = "Chuẩn bị...";
+            box.classList.remove('border-emerald-500', 'bg-emerald-950/20');
+
+            sessionState.waitingForStimulus = true;
+
+            const delay = Math.floor(Math.random() * 2500) + 1500;
+            sessionState.timeoutId = setTimeout(() => {
+                sessionState.waitingForStimulus = false;
+                text.classList.add('hidden');
+                circle.classList.remove('hidden');
+                box.classList.add('border-emerald-500', 'bg-emerald-950/20');
+                sessionState.startTime = performance.now();
+            }, delay);
+        }
+
+        function handleReaction() {
+            if (sessionState.waitingForStimulus) {
+                clearTimeout(sessionState.timeoutId);
+                sessionState.earlyErrors++;
+                document.getElementById('stimulus-text').innerText = "BẤM SỚM! Bỏ qua lượt này...";
+                sessionState.waitingForStimulus = false;
+                setTimeout(nextTrial, 1200);
+                return;
+            }
+
+            if (sessionState.startTime > 0) {
+                const rt = Math.round(performance.now() - sessionState.startTime);
+                sessionState.reactionTimes.push(rt);
+                sessionState.startTime = 0;
+                nextTrial();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !document.getElementById('test-area').classList.contains('hidden')) {
+                e.preventDefault(); // Tránh cuộn trang
+                handleReaction();
+            }
+        });
+
+        function finishBlock() {
+            stopTone(); // Dừng phát âm thanh ngay khi kết thúc vòng
+            
+            const currentCond = sessionConfig.randomizedConditions[sessionState.currentBlockIndex];
+            const rts = sessionState.reactionTimes;
+            const mean = rts.length ? Math.round(rts.reduce((a, b) => a + b, 0) / rts.length) : 0;
+            
+            let variance = 0;
+            if(rts.length > 1) {
+                variance = rts.reduce((sq, n) => sq + Math.pow(n - mean, 2), 0) / (rts.length - 1);
+            }
+            const sd = Math.round(Math.sqrt(variance));
+            const accuracy = Math.round((rts.length / sessionConfig.maxTrialsPerBlock) * 100);
+
+            sessionState.currentSessionResults.push({
+                condition: currentCond.name,
+                meanRt: mean,
+                sdRt: sd,
+                accuracy: accuracy,
+                errors: sessionState.earlyErrors
+            });
+
+            document.getElementById('test-area').classList.add('hidden');
+
+            if (sessionState.currentBlockIndex < 3) {
+                document.getElementById('completed-block-num').innerText = sessionState.currentBlockIndex + 1;
+                document.getElementById('break-panel').classList.remove('hidden');
+            } else {
+                document.getElementById('post-survey-panel').classList.remove('hidden');
+            }
+        }
+
+        function startNextBlock() {
+            sessionState.currentBlockIndex++;
+            startBlock();
+        }
+
+        function submitFinalSessionData() {
+            const postAnnoyance = document.getElementById('post-annoyance').value;
+            const postFocus = document.getElementById('post-focus').value;
+
+            sessionState.postAnnoyance = postAnnoyance;
+            sessionState.postFocus = postFocus;
+
+            document.getElementById('post-survey-panel').classList.add('hidden');
+            finishFullSession();
+        }
+
+        function finishFullSession() {
+            document.getElementById('result-panel').classList.remove('hidden');
+            const cardsContainer = document.getElementById('summary-cards');
+            cardsContainer.innerHTML = '';
+
+            const info = document.createElement('div');
+            info.className = "md:col-span-2 bg-slate-900/70 border border-slate-700 rounded-xl p-4";
+            info.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                    <div><p class="text-xs text-slate-500">HỌ VÀ TÊN</p><p class="font-bold text-white">${escapeHtml(sessionConfig.studentName)}</p></div>
+                    <div><p class="text-xs text-slate-500">TRƯỜNG</p><p class="font-bold text-white">${escapeHtml(sessionConfig.schoolName)}</p></div>
+                    <div><p class="text-xs text-slate-500">LỚP</p><p class="font-bold text-white">${escapeHtml(sessionConfig.className)}</p></div>
+                </div>
+            `;
+            cardsContainer.appendChild(info);
+
+            sessionState.currentSessionResults.forEach((res, idx) => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border border-slate-700/80 rounded-xl p-4 space-y-2";
+                card.innerHTML = `
+                    <div class="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800 pb-2">
+                        <span class="font-bold text-indigo-400">Vòng ${idx + 1}</span>
+                        <span>${escapeHtml(res.condition)}</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-center pt-1">
+                        <div><p class="text-[10px] text-slate-500">Mean RT</p><p class="font-bold text-slate-200 text-sm">${res.meanRt} ms</p></div>
+                        <div><p class="text-[10px] text-slate-500">SD</p><p class="font-bold text-slate-300 text-sm">${res.sdRt} ms</p></div>
+                        <div><p class="text-[10px] text-slate-500">Lỗi bấm sớm</p><p class="font-bold text-rose-400 text-sm">${res.errors}</p></div>
+                    </div>
+                    <div class="text-center text-xs text-emerald-400 pt-1">Độ chính xác: <strong>${res.accuracy}%</strong></div>
+                `;
+                cardsContainer.appendChild(card);
+            });
+
+            const survey = document.createElement('div');
+            survey.className = "md:col-span-2 bg-slate-900/50 border border-slate-700 rounded-xl p-4 text-sm";
+            survey.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div><span class="text-slate-500">Khó chịu sau thử nghiệm:</span> <strong class="text-slate-200">${sessionState.postAnnoyance}/5</strong></div>
+                    <div><span class="text-slate-500">Khả năng tập trung:</span> <strong class="text-slate-200">${sessionState.postFocus}/5</strong></div>
+                </div>`;
+            cardsContainer.appendChild(survey);
+        }
+
+        function escapeHtml(value) {
+            return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+        }
+
+        function downloadResultImage() {
+            // Tạo phiếu kết quả độc lập, không phụ thuộc vào giao diện HTML hiện tại.
+            // Kích thước cố định giúp ảnh xuất ra luôn cân đối trên mọi màn hình.
+            const width = 1400;
+            const padding = 80;
+            const cardX = padding;
+            const cardW = width - padding * 2;
+            const resultCardH = 190;
+            const resultGap = 24;
+            const headerH = 360;
+            const surveyH = 150;
+            const footerH = 110;
+            const results = Array.isArray(sessionState.currentSessionResults)
+                ? sessionState.currentSessionResults
+                : [];
+
+            const height =
+                padding * 2 +
+                headerH +
+                24 +
+                results.length * resultCardH +
+                Math.max(0, results.length - 1) * resultGap +
+                28 +
+                surveyH +
+                24 +
+                footerH;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'alphabetic';
+
+            // Helpers ---------------------------------------------------------
+            function roundedRect(x, y, w, h, r) {
+                r = Math.min(r, w / 2, h / 2);
+                ctx.beginPath();
+                ctx.moveTo(x + r, y);
+                ctx.arcTo(x + w, y, x + w, y + h, r);
+                ctx.arcTo(x + w, y + h, x, y + h, r);
+                ctx.arcTo(x, y + h, x, y, r);
+                ctx.arcTo(x, y, x + w, y, r);
+                ctx.closePath();
+            }
+
+            function fillRoundedRect(x, y, w, h, r, fill) {
+                ctx.fillStyle = fill;
+                roundedRect(x, y, w, h, r);
+                ctx.fill();
+            }
+
+            function strokeRoundedRect(x, y, w, h, r, stroke, lineWidth = 2) {
+                ctx.strokeStyle = stroke;
+                ctx.lineWidth = lineWidth;
+                roundedRect(x, y, w, h, r);
+                ctx.stroke();
+            }
+
+            function fitText(text, maxWidth, font, fallback = '...') {
+                ctx.font = font;
+                const value = String(text ?? '');
+                if (ctx.measureText(value).width <= maxWidth) return value;
+
+                let out = value;
+                while (out.length > 0 && ctx.measureText(out + fallback).width > maxWidth) {
+                    out = out.slice(0, -1);
+                }
+                return out + fallback;
+            }
+
+            function drawLabelValue(label, value, x, y, maxWidth) {
+                ctx.font = '600 19px Arial, sans-serif';
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillText(label, x, y);
+
+                ctx.font = 'bold 25px Arial, sans-serif';
+                ctx.fillStyle = '#f8fafc';
+                ctx.fillText(fitText(value || '—', maxWidth, 'bold 25px Arial, sans-serif'), x, y + 38);
+            }
+
+            // Background ------------------------------------------------------
+            ctx.fillStyle = '#0b1120';
+            ctx.fillRect(0, 0, width, height);
+
+            // Main sheet
+            fillRoundedRect(padding, padding, cardW, height - padding * 2, 30, '#111827');
+            strokeRoundedRect(padding, padding, cardW, height - padding * 2, 30, '#334155', 2);
+
+            // Header ----------------------------------------------------------
+            ctx.fillStyle = '#818cf8';
+            ctx.font = 'bold 42px Arial, sans-serif';
+            ctx.fillText('PSYCH-TEST KHKT', padding + 45, padding + 62);
+
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = 'bold 30px Arial, sans-serif';
+            ctx.fillText('PHIẾU KẾT QUẢ THỬ NGHIỆM CÁ NHÂN', padding + 45, padding + 112);
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '20px Arial, sans-serif';
+            ctx.fillText(
+                'Nghiên cứu ảnh hưởng của các dải tần số âm thanh đến thời gian phản ứng và khả năng tập trung',
+                padding + 45,
+                padding + 150
+            );
+
+            // Divider
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding + 45, padding + 180);
+            ctx.lineTo(width - padding - 45, padding + 180);
+            ctx.stroke();
+
+            // Participant info
+            const infoY = padding + 230;
+            const col1 = padding + 45;
+            const col2 = padding + 455;
+            const col3 = padding + 865;
+
+            drawLabelValue('HỌ VÀ TÊN', sessionConfig.studentName, col1, infoY, 360);
+            drawLabelValue('TRƯỜNG', sessionConfig.schoolName, col2, infoY, 360);
+            drawLabelValue('LỚP', sessionConfig.className, col3, infoY, 360);
+
+            // Results ---------------------------------------------------------
+            let y = padding + headerH;
+
+            ctx.fillStyle = '#e2e8f0';
+            ctx.font = 'bold 25px Arial, sans-serif';
+            ctx.fillText('KẾT QUẢ THEO TỪNG VÒNG', padding + 45, y - 12);
+
+            results.forEach((res, idx) => {
+                fillRoundedRect(cardX + 45, y, cardW - 90, resultCardH, 20, '#0f172a');
+                strokeRoundedRect(cardX + 45, y, cardW - 90, resultCardH, 20, '#263449', 2);
+
+                // Round + condition
+                ctx.fillStyle = '#a5b4fc';
+                ctx.font = 'bold 24px Arial, sans-serif';
+                ctx.fillText(`VÒNG ${idx + 1}`, cardX + 75, y + 43);
+
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '19px Arial, sans-serif';
+                ctx.fillText(fitText(res.condition, 430, '19px Arial, sans-serif'), cardX + 75, y + 78);
+
+                // Metrics
+                const metricY1 = y + 42;
+                const metricY2 = y + 105;
+                const m1 = cardX + 555;
+                const m2 = cardX + 805;
+                const m3 = cardX + 1060;
+
+                ctx.font = '16px Arial, sans-serif';
+                ctx.fillStyle = '#64748b';
+                ctx.fillText('MEAN RT', m1, metricY1);
+                ctx.fillText('SD', m2, metricY1);
+                ctx.fillText('ĐỘ CHÍNH XÁC', m3, metricY1);
+
+                ctx.font = 'bold 24px Arial, sans-serif';
+                ctx.fillStyle = '#f8fafc';
+                ctx.fillText(`${res.meanRt} ms`, m1, metricY1 + 32);
+                ctx.fillText(`${res.sdRt} ms`, m2, metricY1 + 32);
+                ctx.fillStyle = '#34d399';
+                ctx.fillText(`${res.accuracy}%`, m3, metricY1 + 32);
+
+                ctx.font = '16px Arial, sans-serif';
+                ctx.fillStyle = '#64748b';
+                ctx.fillText('LỖI BẤM SỚM', m1, metricY2);
+                ctx.font = 'bold 21px Arial, sans-serif';
+                ctx.fillStyle = '#fb7185';
+                ctx.fillText(String(res.errors), m1, metricY2 + 30);
+
+                y += resultCardH + resultGap;
+            });
+
+            // Survey summary --------------------------------------------------
+            y += 8;
+            fillRoundedRect(cardX + 45, y, cardW - 90, surveyH, 20, '#0f172a');
+            strokeRoundedRect(cardX + 45, y, cardW - 90, surveyH, 20, '#263449', 2);
+
+            ctx.fillStyle = '#e2e8f0';
+            ctx.font = 'bold 21px Arial, sans-serif';
+            ctx.fillText('ĐÁNH GIÁ TRẠNG THÁI', cardX + 75, y + 38);
+
+            ctx.font = '18px Arial, sans-serif';
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText(`Mệt mỏi ban đầu:`, cardX + 75, y + 82);
+            ctx.fillText(`Stress ban đầu:`, cardX + 370, y + 82);
+            ctx.fillText(`Khó chịu sau thử nghiệm:`, cardX + 665, y + 82);
+            ctx.fillText(`Khả năng tập trung:`, cardX + 1040, y + 82);
+
+            ctx.font = 'bold 21px Arial, sans-serif';
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillText(`${sessionConfig.preFatigue}/5`, cardX + 75, y + 115);
+            ctx.fillText(`${sessionConfig.preStress}/5`, cardX + 370, y + 115);
+            ctx.fillText(`${sessionState.postAnnoyance || '—'}/5`, cardX + 665, y + 115);
+            ctx.fillText(`${sessionState.postFocus || '—'}/5`, cardX + 1040, y + 115);
+
+            // Footer ----------------------------------------------------------
+            y += surveyH + 30;
+            ctx.fillStyle = '#64748b';
+            ctx.font = '17px Arial, sans-serif';
+            ctx.fillText(
+                'Kết quả được tạo trực tiếp từ bài thử nghiệm trên thiết bị này.',
+                cardX + 45,
+                y + 15
+            );
+
+            ctx.fillStyle = '#475569';
+            ctx.font = '15px Arial, sans-serif';
+            ctx.fillText(
+                `Thời gian xuất kết quả: ${new Date().toLocaleString('vi-VN')}`,
+                cardX + 45,
+                y + 43
+            );
+
+            // Download -------------------------------------------------------
+            const safeName = String(sessionConfig.studentName || 'nguoi_tham_gia')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-zA-Z0-9 ]/g, '')
+                .trim()
+                .replace(/\s+/g, '_') || 'nguoi_tham_gia';
+
+            const link = document.createElement('a');
+            link.download = `Ket_qua_PsychTest_${safeName}.png`;
+            link.href = canvas.toDataURL('image/png');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        }
+
+        function resetTest() {
+            document.getElementById('result-panel').classList.add('hidden');
+            document.getElementById('setup-panel').classList.remove('hidden');
+            document.getElementById('student-name').value = '';
+            document.getElementById('school-name').value = '';
+            document.getElementById('class-name').value = '';
+            document.getElementById('post-survey-panel').classList.add('hidden');
+            sessionState.currentSessionResults = [];
+        }
+    </script>
+</body>
+</html>
