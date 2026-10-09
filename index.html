@@ -52,7 +52,7 @@
                     </div>
                     <div>
                         <h2 class="text-xl font-bold mb-1">Khảo sát & Kiểm tra Thực nghiệm</h2>
-                        <p class="text-sm text-slate-400">Bài thử nghiệm đo thời gian phản ứng thị giác kết hợp đánh giá tâm lý trước/sau thử nghiệm. Bạn sẽ lần lượt trải qua <strong>4 dải tần số âm thanh ngẫu nhiên</strong>. Vui lòng đeo tai nghe và giữ tập trung cao độ.</p>
+                        <p class="text-sm text-slate-400">Bài thử nghiệm đo thời gian phản ứng thị giác kết hợp bài kiểm tra xử lý thông tin & đọc hiểu. Bạn sẽ lần lượt trải qua <strong>4 dải tần số âm thanh ngẫu nhiên</strong>. Vui lòng đeo tai nghe và giữ tập trung cao độ.</p>
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@
                         <input type="text" id="class-name" placeholder="VD: 10A" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-4 focus:outline-none focus:border-indigo-500 text-slate-100 text-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-2 text-slate-300">Số lượt thử / Tần số</label>
+                        <label class="block text-sm font-medium mb-2 text-slate-300">Số lượt thử phản ứng / Tần số</label>
                         <select id="trial-count" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-4 focus:outline-none focus:border-indigo-500 text-slate-100 text-sm">
                             <option value="10">10 Lượt (Chuẩn)</option>
                             <option value="15">15 Lượt (Chính xác cao)</option>
@@ -142,12 +142,16 @@
                 </button>
             </div>
 
-            <!-- KHU VỰC THỰC NGHIỆM (CPT TEST) -->
+            <!-- KHU VỰC THỰC NGHIỆM PHẢN ỨNG (CPT TEST) -->
             <div id="test-area" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-8 text-center space-y-6">
                 <div class="flex justify-between items-center text-sm text-slate-400 border-b border-slate-700 pb-4">
                     <span>Vòng: <strong id="current-block" class="text-indigo-400">1 / 4</strong></span>
-                    <span>Lượt: <strong id="current-trial" class="text-white">0</strong> / <span id="total-trials">10</span></span>
+                    <span>Phần 1: Đo thời gian phản ứng (Spacebar)</span>
                     <span>Tần số hiện tại: <strong id="active-cond-name" class="text-amber-400">---</strong></span>
+                </div>
+
+                <div class="text-xs text-slate-400">
+                    Lượt: <strong id="current-trial" class="text-white">0</strong> / <span id="total-trials">10</span>
                 </div>
 
                 <div id="stimulus-box" class="h-64 bg-slate-900 border-2 border-dashed border-slate-700 rounded-2xl flex items-center justify-center relative overflow-hidden transition-all duration-100">
@@ -157,6 +161,29 @@
 
                 <button id="btn-react" onclick="handleReaction()" class="w-full py-6 bg-slate-700 hover:bg-slate-600 text-white font-bold text-xl rounded-xl transition active:scale-98">
                     PHẢN ỨNG (SPACEBAR)
+                </button>
+            </div>
+
+            <!-- KHU VỰC NHIỆM VỤ ĐỌC HIỂU & XỬ LÝ THÔNG TIN -->
+            <div id="reading-area" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-6">
+                <div class="flex justify-between items-center text-sm text-slate-400 border-b border-slate-700 pb-3">
+                    <span class="font-bold text-indigo-400 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open"></i> Vòng <span id="reading-block-num">1</span>/4: Bài đọc & Xử lý thông tin
+                    </span>
+                    <span>Âm thanh đang nghe: <strong id="reading-cond-name" class="text-amber-400">---</strong></span>
+                </div>
+
+                <!-- KHUNG BÀI ĐỌC -->
+                <div class="bg-slate-900 border border-slate-700/80 rounded-xl p-5 space-y-3">
+                    <h3 id="passage-title" class="text-base font-bold text-indigo-300 border-b border-slate-800 pb-2"></h3>
+                    <p id="passage-content" class="text-sm text-slate-200 leading-relaxed space-y-2"></p>
+                </div>
+
+                <!-- BÀI TẬP CÂU HỎI TRẮC NGHIỆM -->
+                <div id="reading-questions-container" class="space-y-6"></div>
+
+                <button onclick="submitReadingTask()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-arrow-right"></i> HOÀN THÀNH BÀI ĐỌC & SẮN SÀNG SANG BƯỚC TIẾP THEO
                 </button>
             </div>
 
@@ -242,7 +269,12 @@
                 </h3>
                 <ol class="list-decimal list-inside space-y-3 text-slate-300 text-sm leading-relaxed">
                     <li><strong class="text-white">Chuẩn bị:</strong> Đeo tai nghe, nhập Họ và tên, Trường và Lớp và hoàn thành 2 câu tự đánh giá mức độ mệt mỏi/căng thẳng ban đầu.</li>
-                    <li><strong class="text-white">Thực nghiệm 4 Vòng:</strong> Bạn sẽ đi qua 4 dải tần âm thanh ngẫu nhiên. Bấm phím <kbd class="px-2 py-0.5 bg-slate-700 border border-slate-600 rounded text-amber-300">Spacebar</kbd> ngay khi thấy VÒNG TRÒN XANH LÁ xuất hiện.</li>
+                    <li><strong class="text-white">Thực nghiệm 4 Vòng:</strong> Bạn sẽ đi qua 4 dải tần âm thanh ngẫu nhiên. Mỗi vòng gồm 2 phần:
+                        <ul class="list-disc list-inside pl-5 mt-1 text-slate-400 space-y-1">
+                            <li>Phần 1: Bấm phím <kbd class="px-2 py-0.5 bg-slate-700 border border-slate-600 rounded text-amber-300">Spacebar</kbd> ngay khi thấy VÒNG TRÒN XANH LÁ xuất hiện.</li>
+                            <li>Phần 2: Đọc đoạn văn ngắn và trả lời các câu hỏi kiểm tra xử lý thông tin.</li>
+                        </ul>
+                    </li>
                     <li><strong class="text-white">Hoàn tất:</strong> Sau khi hết 4 vòng, hãy điền Phiếu đánh giá sau thử nghiệm để kết thúc. Sau đó tải file kết quả về và gửi cho người quản lí dự án.</li>
                 </ol>
             </div>
@@ -262,12 +294,12 @@
 
                 <div style="background: rgba(15, 23, 42, 0.5); padding: 14px; border-radius: 8px; font-size: 0.9rem; line-height: 1.6; color: #cbd5e1;">
                   <h3 style="color: #f3f4f6; font-size: 1rem; margin-bottom: 8px;">📌 Mô tả tổng quan & Mục tiêu nghiên cứu:</h3>
-                  <p style="margin-bottom: 8px;">Âm thanh xuất hiện thường xuyên trong môi trường học tập và có thể ảnh hưởng đến khả năng tập trung, tiếp nhận và xử lý thông tin. Đặc biệt, white noise được sử dụng để tạo nền âm thanh ổn định, nhưng tác động của các dải tần khác nhau vẫn cần được kiểm chứng. Vì vậy, nhóm nghiên cứu mối liên hệ giữa tần số âm thanh và khả năng tập trung của học sinh THPT. Thông qua white noise và bài kiểm tra phản ứng bằng phím Spacebar, nhóm thu thập dữ liệu về tốc độ và độ chính xác để phân tích hiệu quả xử lý thông tin.</p>
+                  <p style="margin-bottom: 8px;">Âm thanh xuất hiện thường xuyên trong môi trường học tập và có thể ảnh hưởng đến khả năng tập trung, tiếp nhận và xử lý thông tin. Đặc biệt, white noise được sử dụng để tạo nền âm thanh ổn định, nhưng tác động của các dải tần khác nhau vẫn cần được kiểm chứng. Vì vậy, nhóm nghiên cứu mối liên hệ giữa tần số âm thanh và khả năng tập trung của học sinh THPT. Thông qua white noise, bài kiểm tra phản ứng bằng phím Spacebar và các bài tập đọc hiểu xử lý thông tin, nhóm thu thập dữ liệu về tốc độ và độ chính xác để phân tích hiệu quả xử lý thông tin.</p>
                   
                   <h3 style="color: #f3f4f6; font-size: 1rem; margin-bottom: 8px; margin-top: 12px;">🧪 Quy trình thử nghiệm:</h3>
                   <ul style="padding-left: 20px; margin-bottom: 0;">
                     <li><b>Bước 1:</b> Khảo sát tự đánh giá trạng thái tâm lý ban đầu (Mệt mỏi, Stress).</li>
-                    <li><b>Bước 2:</b> Thực hiện 4 vòng đo thời gian phản ứng tương ứng với các tần số âm thanh ngẫu nhiên.</li>
+                    <li><b>Bước 2:</b> Thực hiện 4 vòng đo thời gian phản ứng & xử lý bài đọc tương ứng với các tần số âm thanh ngẫu nhiên.</li>
                     <li><b>Bước 3:</b> Đánh giá cảm nhận chủ quan về âm thanh và độ tập trung sau khi hoàn thành.</li>
                   </ul>
                 </div>
@@ -294,6 +326,138 @@
             { id: 'high', name: 'Tần số Cao (4,000 Hz)', freq: 4000 }
         ];
 
+        // 4 BÀI ĐỌC CẬP NHẬT: TẬP TRUNG BẪY NHẬN THỨC / ĐÁNH LỪA TỪ NGỮ, KHÔNG CÓ TÍNH TOÁN PhỨC TẠP
+        const READING_TASKS = [
+            {
+                id: 'task_1',
+                title: 'BÀI ĐỌC 1: NỘI QUY PHÒNG THÍ NGHIỆM SINH HỌC',
+                content: 'Tất cả học sinh phải mặc áo blouse trắng và đeo kính bảo hộ trước khi vào phòng. Học sinh KHÔNG ĐƯỢC phép mang thức ăn, ngoại trừ nước lọc đóng chai. Tuy nhiên, việc uống nước chỉ được thực hiện tại khu vực hành lang bên ngoài, hoàn toàn CẤM uống nước trong phòng thực hành. Khi xảy ra sự cố hóa chất bắn vào mắt, phải rửa mắt bằng nước sạch trong ít nhất 15 phút, sau đó báo ngay cho giáo viên chứ KHÔNG ĐƯỢC tự ý bôi bất kỳ loại thuốc nào. Bàn thực hành số 1 và số 3 dành cho lớp 11A, bàn số 2 dành cho lớp 11B.',
+                questions: [
+                    {
+                        q: 'Câu 1: Học sinh có được phép mang nước lọc đóng chai vào phòng thực hành không?',
+                        options: [
+                            'Không được phép mang vào.',
+                            'Được phép mang vào nhưng chỉ được uống ngoài hành lang.',
+                            'Được phép mang vào và uống tự do trong phòng.',
+                            'Chỉ được mang nếu là học sinh lớp 11A.'
+                        ],
+                        correct: 1
+                    },
+                    {
+                        q: 'Câu 2: Khi hóa chất bắn vào mắt, hành động nào sau đây là SAI quy định?',
+                        options: [
+                            'Rửa mắt bằng nước sạch ít nhất 15 phút.',
+                            'Báo ngay cho giáo viên hướng dẫn.',
+                            'Lấy thuốc mỡ trong tủ y tế bôi ngay vào mắt.',
+                            'Rửa mắt trước rồi mới báo giáo viên.'
+                        ],
+                        correct: 2
+                    },
+                    {
+                        q: 'Câu 3: Học sinh lớp 11B được phân công thực hành ở bàn nào?',
+                        options: ['Bàn số 1', 'Bàn số 2', 'Bàn số 3', 'Bàn số 1 và 3'],
+                        correct: 1
+                    }
+                ]
+            },
+            {
+                id: 'task_2',
+                title: 'BÀI ĐỌC 2: THÔNG BÁO HOẠT ĐỘNG NGOẠI KHÓA MÙA HÈ',
+                content: 'Trường THPT X tổ chức chuyến tham quan Bảo tàng Lịch sử vào sáng thứ Bảy tuần này. Học sinh có mặt tại cổng trường lúc 6 giờ 30 phút, xe sẽ khởi hành đúng 7 giờ 00. Riêng học sinh khối 10 sẽ đi xe số 1 và số 2, khối 11 đi xe số 3. Nhà trường chuẩn bị sẵn bữa ăn trưa cho tất cả học sinh, học sinh KHÔNG CẦN mang theo đồ ăn trưa, nhưng BẮT BUỘC phải tự chuẩn bị mũ/nón và 1 cuốn sổ tay. Học sinh được phép sử dụng điện thoại để chụp ảnh tư liệu, nhưng CẤM quay phim trong tất cả các phòng trưng bày.',
+                questions: [
+                    {
+                        q: 'Câu 1: Học sinh cần mang theo những vật dụng nào?',
+                        options: [
+                            'Đồ ăn trưa và nước uống.',
+                            'Mũ/nón và sổ tay.',
+                            'Điện thoại và máy quay phim.',
+                            'Không cần mang bất kỳ vật dụng nào.'
+                        ],
+                        correct: 1
+                    },
+                    {
+                        q: 'Câu 2: Quy định về việc sử dụng điện thoại tại bảo tàng như thế nào?',
+                        options: [
+                            'Cấm hoàn toàn việc sử dụng điện thoại.',
+                            'Được phép quay phim nhưng cấm chụp ảnh.',
+                            'Được phép chụp ảnh tư liệu nhưng cấm quay phim.',
+                            'Được phép quay phim và chụp ảnh thoải mái.'
+                        ],
+                        correct: 2
+                    },
+                    {
+                        q: 'Câu 3: Học sinh khối 11 sẽ di chuyển bằng xe số mấy?',
+                        options: ['Xe số 1', 'Xe số 2', 'Xe số 3', 'Xe số 1 hoặc xe số 2'],
+                        correct: 2
+                    }
+                ]
+            },
+            {
+                id: 'task_3',
+                title: 'BÀI ĐỌC 3: HƯỚNG DẪN SỬ DỤNG THIẾT BỊ LỌC KHÔNG KHÍ',
+                content: 'Máy lọc không khí Model K200 có 3 chế độ: Tự động (Auto), Ngủ (Sleep) và Cực đại (Turbo). Màn hình hiển thị đèn màu Xanh lá là không khí sạch, màu Vàng là ô nhiễm nhẹ, màu Đỏ là ô nhiễm nặng. Khi đèn báo màu Vàng, máy sẽ TỰ ĐỘNG chuyển sang chế độ Turbo nếu đang ở chế độ Auto. Khi vệ sinh máy, người dùng CÓ THỂ rửa màng lọc thô bằng nước, nhưng TUYỆT ĐỐI KHÔNG ĐƯỢC rửa màng lọc HEPA bằng nước mà chỉ được dùng chổi mềm quét bụi. Khuyến nghị thay màng lọc HEPA sau 6 tháng sử dụng.',
+                questions: [
+                    {
+                        q: 'Câu 1: Đèn hiển thị màu nào báo hiệu chất lượng không khí ô nhiễm nhẹ?',
+                        options: ['Màu Xanh lá', 'Màu Vàng', 'Màu Đỏ', 'Màu Cam'],
+                        correct: 1
+                    },
+                    {
+                        q: 'Câu 2: Cách vệ sinh màng lọc HEPA đúng quy định là gì?',
+                        options: [
+                            'Rửa sạch bằng nước ấm.',
+                            'Rửa bằng nước xà phòng nhẹ.',
+                            'Dùng chổi mềm quét bụi, tuyệt đối không rửa nước.',
+                            'Ngâm trong nước 15 phút rồi phơi khô.'
+                        ],
+                        correct: 2
+                    },
+                    {
+                        q: 'Câu 3: Thời gian khuyến nghị để thay màng lọc HEPA mới là bao lâu?',
+                        options: ['3 tháng', '6 tháng', '12 tháng', 'Không cần thay, chỉ cần rửa sạch'],
+                        correct: 1
+                    }
+                ]
+            },
+            {
+                id: 'task_4',
+                title: 'BÀI ĐỌC 4: THÔNG BÁO LỊCH MỞ CỬA THƯ VIỆN TRƯỜNG',
+                content: 'Thư viện trường mở cửa từ thứ Hai đến thứ Sáu, nghỉ thứ Bảy và Chủ nhật. Buổi sáng mở cửa từ 7h30 đến 11h30, buổi chiều từ 13h00 đến 16h30. Học sinh được mượn tối đa 2 cuốn sách về nhà trong thời hạn 7 ngày. Nếu trả sách trễ hạn, học sinh sẽ bị tạm dừng quyền mượn sách trong 2 tuần, chứ KHÔNG bị phạt tiền. Học sinh khối 12 được ưu tiên mượn sách tham khảo ôn thi trong thời hạn 14 ngày, nhưng vẫn chỉ được mượn tối đa 2 cuốn.',
+                questions: [
+                    {
+                        q: 'Câu 1: Hình phạt dành cho học sinh trả sách quá hạn là gì?',
+                        options: [
+                            'Phạt tiền theo số ngày trễ.',
+                            'Tạm dừng quyền mượn sách trong 2 tuần.',
+                            'Phạt lao động vệ sinh thư viện.',
+                            'Tịch thu thẻ thư viện vĩnh viễn.'
+                        ],
+                        correct: 1
+                    },
+                    {
+                        q: 'Câu 2: Học sinh khối 10 được mượn tối đa bao nhiêu cuốn sách về nhà và trong bao lâu?',
+                        options: [
+                            '2 cuốn trong 7 ngày.',
+                            '2 cuốn trong 14 ngày.',
+                            '3 cuốn trong 7 ngày.',
+                            '3 cuốn trong 14 ngày.'
+                        ],
+                        correct: 0
+                    },
+                    {
+                        q: 'Câu 3: Thư viện đóng cửa vào những ngày nào trong tuần?',
+                        options: [
+                            'Thứ Bảy và Chủ nhật.',
+                            'Chỉ đóng cửa Chủ nhật.',
+                            'Chiều thứ Sáu và Chủ nhật.',
+                            'Mở cửa tất cả các ngày trong tuần.'
+                        ],
+                        correct: 0
+                    }
+                ]
+            }
+        ];
+
         let sessionConfig = { 
             studentName: '', 
             schoolName: '', 
@@ -301,6 +465,7 @@
             maxTrialsPerBlock: 10, 
             volume: 0.3, 
             randomizedConditions: [],
+            randomizedReadingTasks: [],
             preFatigue: 3,
             preStress: 3
         };
@@ -315,8 +480,6 @@
             timeoutId: null, 
             currentSessionResults: [] 
         };
-
-
 
         function switchTab(tabName) {
             ['test', 'guide', 'project'].forEach(t => {
@@ -336,7 +499,6 @@
                 activeBtn.classList.add('active-tab');
                 activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
             }
-            
         }
 
         function initAudio() {
@@ -398,7 +560,7 @@
                 return;
             }
 
-            initAudio(); // Khởi tạo âm thanh từ tương tác người dùng
+            initAudio();
 
             sessionConfig.studentName = studentName;
             sessionConfig.schoolName = schoolName;
@@ -407,7 +569,9 @@
             sessionConfig.volume = parseFloat(document.getElementById('volume-range').value) / 100;
             sessionConfig.preFatigue = document.getElementById('pre-fatigue').value;
             sessionConfig.preStress = document.getElementById('pre-stress').value;
+            
             sessionConfig.randomizedConditions = shuffleArray(AUDIO_CONDITIONS);
+            sessionConfig.randomizedReadingTasks = shuffleArray(READING_TASKS);
 
             sessionState.currentBlockIndex = 0;
             sessionState.currentSessionResults = [];
@@ -420,6 +584,7 @@
             const currentCond = sessionConfig.randomizedConditions[sessionState.currentBlockIndex];
             
             document.getElementById('test-area').classList.remove('hidden');
+            document.getElementById('reading-area').classList.add('hidden');
             document.getElementById('break-panel').classList.add('hidden');
 
             document.getElementById('current-block').innerText = `${sessionState.currentBlockIndex + 1} / 4`;
@@ -441,7 +606,7 @@
 
         function nextTrial() {
             if (sessionState.activeTrial >= sessionConfig.maxTrialsPerBlock) {
-                finishBlock();
+                finishReactionTask();
                 return;
             }
 
@@ -489,14 +654,66 @@
 
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && !document.getElementById('test-area').classList.contains('hidden')) {
-                e.preventDefault(); // Tránh cuộn trang
+                e.preventDefault();
                 handleReaction();
             }
         });
 
-        function finishBlock() {
-            stopTone(); // Dừng phát âm thanh ngay khi kết thúc vòng
+        function finishReactionTask() {
+            document.getElementById('test-area').classList.add('hidden');
             
+            const currentCond = sessionConfig.randomizedConditions[sessionState.currentBlockIndex];
+            const currentTask = sessionConfig.randomizedReadingTasks[sessionState.currentBlockIndex];
+
+            document.getElementById('reading-block-num').innerText = sessionState.currentBlockIndex + 1;
+            document.getElementById('reading-cond-name').innerText = currentCond.name;
+            document.getElementById('passage-title').innerText = currentTask.title;
+            document.getElementById('passage-content').innerText = currentTask.content;
+
+            const questionsContainer = document.getElementById('reading-questions-container');
+            questionsContainer.innerHTML = '';
+
+            currentTask.questions.forEach((qObj, qIdx) => {
+                const qBox = document.createElement('div');
+                qBox.className = 'bg-slate-900 border border-slate-700/80 rounded-xl p-4 space-y-3';
+                
+                let optionsHtml = '';
+                qObj.options.forEach((optText, optIdx) => {
+                    optionsHtml += `
+                        <label class="flex items-center gap-3 p-2 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 rounded-lg cursor-pointer text-xs text-slate-200">
+                            <input type="radio" name="q_${qIdx}" value="${optIdx}" class="w-4 h-4 accent-indigo-500">
+                            <span>${optText}</span>
+                        </label>
+                    `;
+                });
+
+                qBox.innerHTML = `
+                    <p class="text-xs font-semibold text-amber-300">${escapeHtml(qObj.q)}</p>
+                    <div class="space-y-2">${optionsHtml}</div>
+                `;
+                questionsContainer.appendChild(qBox);
+            });
+
+            document.getElementById('reading-area').classList.remove('hidden');
+        }
+
+        function submitReadingTask() {
+            const currentTask = sessionConfig.randomizedReadingTasks[sessionState.currentBlockIndex];
+            let readingCorrectCount = 0;
+
+            for (let i = 0; i < currentTask.questions.length; i++) {
+                const selected = document.querySelector(`input[name="q_${i}"]:checked`);
+                if (!selected) {
+                    alert(`Vui lòng trả lời đầy đủ tất cả các câu hỏi của bài đọc trước khi tiếp tục!`);
+                    return;
+                }
+                if (parseInt(selected.value) === currentTask.questions[i].correct) {
+                    readingCorrectCount++;
+                }
+            }
+
+            stopTone();
+
             const currentCond = sessionConfig.randomizedConditions[sessionState.currentBlockIndex];
             const rts = sessionState.reactionTimes;
             const mean = rts.length ? Math.round(rts.reduce((a, b) => a + b, 0) / rts.length) : 0;
@@ -513,10 +730,11 @@
                 meanRt: mean,
                 sdRt: sd,
                 accuracy: accuracy,
-                errors: sessionState.earlyErrors
+                errors: sessionState.earlyErrors,
+                readingScore: `${readingCorrectCount}/${currentTask.questions.length}`
             });
 
-            document.getElementById('test-area').classList.add('hidden');
+            document.getElementById('reading-area').classList.add('hidden');
 
             if (sessionState.currentBlockIndex < 3) {
                 document.getElementById('completed-block-num').innerText = sessionState.currentBlockIndex + 1;
@@ -566,12 +784,13 @@
                         <span class="font-bold text-indigo-400">Vòng ${idx + 1}</span>
                         <span>${escapeHtml(res.condition)}</span>
                     </div>
-                    <div class="grid grid-cols-3 gap-2 text-center pt-1">
+                    <div class="grid grid-cols-4 gap-2 text-center pt-1">
                         <div><p class="text-[10px] text-slate-500">Mean RT</p><p class="font-bold text-slate-200 text-sm">${res.meanRt} ms</p></div>
                         <div><p class="text-[10px] text-slate-500">SD</p><p class="font-bold text-slate-300 text-sm">${res.sdRt} ms</p></div>
-                        <div><p class="text-[10px] text-slate-500">Lỗi bấm sớm</p><p class="font-bold text-rose-400 text-sm">${res.errors}</p></div>
+                        <div><p class="text-[10px] text-slate-500">Bấm sớm</p><p class="font-bold text-rose-400 text-sm">${res.errors}</p></div>
+                        <div><p class="text-[10px] text-slate-500">Đọc hiểu</p><p class="font-bold text-amber-400 text-sm">${res.readingScore}</p></div>
                     </div>
-                    <div class="text-center text-xs text-emerald-400 pt-1">Độ chính xác: <strong>${res.accuracy}%</strong></div>
+                    <div class="text-center text-xs text-emerald-400 pt-1">Độ chính xác Spacebar: <strong>${res.accuracy}%</strong></div>
                 `;
                 cardsContainer.appendChild(card);
             });
@@ -591,8 +810,6 @@
         }
 
         function downloadResultImage() {
-            // Tạo phiếu kết quả độc lập, không phụ thuộc vào giao diện HTML hiện tại.
-            // Kích thước cố định giúp ảnh xuất ra luôn cân đối trên mọi màn hình.
             const width = 1400;
             const padding = 80;
             const cardX = padding;
@@ -624,7 +841,6 @@
             const ctx = canvas.getContext('2d');
             ctx.textBaseline = 'alphabetic';
 
-            // Helpers ---------------------------------------------------------
             function roundedRect(x, y, w, h, r) {
                 r = Math.min(r, w / 2, h / 2);
                 ctx.beginPath();
@@ -671,15 +887,12 @@
                 ctx.fillText(fitText(value || '—', maxWidth, 'bold 25px Arial, sans-serif'), x, y + 38);
             }
 
-            // Background ------------------------------------------------------
             ctx.fillStyle = '#0b1120';
             ctx.fillRect(0, 0, width, height);
 
-            // Main sheet
             fillRoundedRect(padding, padding, cardW, height - padding * 2, 30, '#111827');
             strokeRoundedRect(padding, padding, cardW, height - padding * 2, 30, '#334155', 2);
 
-            // Header ----------------------------------------------------------
             ctx.fillStyle = '#818cf8';
             ctx.font = 'bold 42px Arial, sans-serif';
             ctx.fillText('PSYCH-TEST KHKT', padding + 45, padding + 62);
@@ -696,7 +909,6 @@
                 padding + 150
             );
 
-            // Divider
             ctx.strokeStyle = '#334155';
             ctx.lineWidth = 2;
             ctx.beginPath();
@@ -704,7 +916,6 @@
             ctx.lineTo(width - padding - 45, padding + 180);
             ctx.stroke();
 
-            // Participant info
             const infoY = padding + 230;
             const col1 = padding + 45;
             const col2 = padding + 455;
@@ -714,7 +925,6 @@
             drawLabelValue('TRƯỜNG', sessionConfig.schoolName, col2, infoY, 360);
             drawLabelValue('LỚP', sessionConfig.className, col3, infoY, 360);
 
-            // Results ---------------------------------------------------------
             let y = padding + headerH;
 
             ctx.fillStyle = '#e2e8f0';
@@ -725,7 +935,6 @@
                 fillRoundedRect(cardX + 45, y, cardW - 90, resultCardH, 20, '#0f172a');
                 strokeRoundedRect(cardX + 45, y, cardW - 90, resultCardH, 20, '#263449', 2);
 
-                // Round + condition
                 ctx.fillStyle = '#a5b4fc';
                 ctx.font = 'bold 24px Arial, sans-serif';
                 ctx.fillText(`VÒNG ${idx + 1}`, cardX + 75, y + 43);
@@ -734,18 +943,19 @@
                 ctx.font = '19px Arial, sans-serif';
                 ctx.fillText(fitText(res.condition, 430, '19px Arial, sans-serif'), cardX + 75, y + 78);
 
-                // Metrics
                 const metricY1 = y + 42;
                 const metricY2 = y + 105;
-                const m1 = cardX + 555;
-                const m2 = cardX + 805;
-                const m3 = cardX + 1060;
+                const m1 = cardX + 530;
+                const m2 = cardX + 720;
+                const m3 = cardX + 910;
+                const m4 = cardX + 1100;
 
                 ctx.font = '16px Arial, sans-serif';
                 ctx.fillStyle = '#64748b';
                 ctx.fillText('MEAN RT', m1, metricY1);
                 ctx.fillText('SD', m2, metricY1);
                 ctx.fillText('ĐỘ CHÍNH XÁC', m3, metricY1);
+                ctx.fillText('ĐỌC HIỂU', m4, metricY1);
 
                 ctx.font = 'bold 24px Arial, sans-serif';
                 ctx.fillStyle = '#f8fafc';
@@ -753,6 +963,8 @@
                 ctx.fillText(`${res.sdRt} ms`, m2, metricY1 + 32);
                 ctx.fillStyle = '#34d399';
                 ctx.fillText(`${res.accuracy}%`, m3, metricY1 + 32);
+                ctx.fillStyle = '#fbbf24';
+                ctx.fillText(res.readingScore || '—', m4, metricY1 + 32);
 
                 ctx.font = '16px Arial, sans-serif';
                 ctx.fillStyle = '#64748b';
@@ -764,7 +976,6 @@
                 y += resultCardH + resultGap;
             });
 
-            // Survey summary --------------------------------------------------
             y += 8;
             fillRoundedRect(cardX + 45, y, cardW - 90, surveyH, 20, '#0f172a');
             strokeRoundedRect(cardX + 45, y, cardW - 90, surveyH, 20, '#263449', 2);
@@ -787,7 +998,6 @@
             ctx.fillText(`${sessionState.postAnnoyance || '—'}/5`, cardX + 665, y + 115);
             ctx.fillText(`${sessionState.postFocus || '—'}/5`, cardX + 1040, y + 115);
 
-            // Footer ----------------------------------------------------------
             y += surveyH + 30;
             ctx.fillStyle = '#64748b';
             ctx.font = '17px Arial, sans-serif';
@@ -805,7 +1015,6 @@
                 y + 43
             );
 
-            // Download -------------------------------------------------------
             const safeName = String(sessionConfig.studentName || 'nguoi_tham_gia')
                 .normalize('NFD')
                 .replace(/[\u0300-\u036f]/g, '')
