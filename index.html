@@ -750,15 +750,52 @@
         }
 
         function submitFinalSessionData() {
-            const postAnnoyance = document.getElementById('post-annoyance').value;
-            const postFocus = document.getElementById('post-focus').value;
+    const postAnnoyance = document.getElementById('post-annoyance').value;
+    const postFocus = document.getElementById('post-focus').value;
 
-            sessionState.postAnnoyance = postAnnoyance;
-            sessionState.postFocus = postFocus;
+    sessionState.postAnnoyance = postAnnoyance;
+    sessionState.postFocus = postFocus;
 
-            document.getElementById('post-survey-panel').classList.add('hidden');
-            finishFullSession();
-        }
+    // 1. Gói toàn bộ dữ liệu lại để chuẩn bị gửi đi
+    const payload = {
+        studentName: sessionConfig.studentName,
+        schoolName: sessionConfig.schoolName,
+        className: sessionConfig.className,
+        preFatigue: sessionConfig.preFatigue,
+        preStress: sessionConfig.preStress,
+        results: sessionState.currentSessionResults,
+        postAnnoyance: postAnnoyance,
+        postFocus: postFocus
+    };
+
+    // 2. DÁN ĐƯỜNG DẪN WEB APP GOOGLE SCRIPT CỦA BẠN VÀO DƯỚI ĐÂY:
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxc_zhi9d-YfqNiwcUiX4vR71JXqxpXADuy_RuYgafSO8OzHAfttz9fjsUoQ4pfg9Br/exec";
+
+    // Hiển thị trạng thái đang gửi trên nút bấm cho học sinh biết
+    const submitBtn = document.querySelector('#post-survey-panel button');
+    const originalBtnText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang gửi dữ liệu về hệ thống...';
+    submitBtn.disabled = true;
+
+    // 3. Gửi dữ liệu ngầm về Google Sheets
+    fetch(WEB_APP_URL, {
+        method: 'POST',
+        mode: 'no-cors', // Tránh lỗi chặn bảo mật CORS của trình duyệt
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(() => {
+        // Gửi thành công thì ẩn bảng khảo sát, hiện kết quả cá nhân
+        document.getElementById('post-survey-panel').classList.add('hidden');
+        finishFullSession();
+    })
+    .catch((error) => {
+        console.error('Lỗi khi gửi:', error);
+        // Dù có lỗi mạng thì vẫn cho học sinh xem kết quả bình thường để không bị gián đoạn
+        document.getElementById('post-survey-panel').classList.add('hidden');
+        finishFullSession();
+    });
+}
 
         function finishFullSession() {
             document.getElementById('result-panel').classList.remove('hidden');
